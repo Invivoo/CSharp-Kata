@@ -1,7 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Xunit;
-
+using FluentAssertions;
 namespace Args;
 
 public class CmdLineParserShould
@@ -30,13 +31,22 @@ public class CmdLineParserShould
         Assert.Equal(8080, actual.Port);
     }
 
+    [Fact]
+    public void InterpretAnIntergerList()
+    {
+        var parser = new CmdLineParser();
+        var actual = parser.Parse(new string[] { "-d", "1,2,-3,6" });
+        var expected = new []{1,2,-3,6};
+        Assert.Equal(expected, actual.MyNumerics);
+    }
+
     [Theory]
     [MemberData(nameof(MultipleArgsParameters))]
     public void InterpretMultipleArgs(string[] args, Param expected)
     {
         var parser = new CmdLineParser();
         var actual = parser.Parse(args);
-        Assert.Equal(expected, actual);
+        actual.Should().BeEquivalentTo(expected);
     }
 
     [Theory]
@@ -62,20 +72,22 @@ public class CmdLineParserShould
     {
         yield return new object[] { new string[] { "-p", "8080", "-l" }, new Param(true, 8080) };
         yield return new object[] { new string[] { "-l", "-p", "8080" }, new Param(true, 8080) };
+        yield return new object[] { new string[] { "-l", "-p", "8080", "-d", "1,2,3" }, new Param(true, 8080, new int[]{1, 2, 3}) };
     }
 }
 
-public record Param(bool ShouldLog, int Port);
+public record Param(bool ShouldLog, int Port, IEnumerable<int> MyNumerics)
+{
+    public Param(bool shouldLog, int port) : this(shouldLog, port, Array.Empty<int>()) { }
+}
 
-//Nom : obligatoire, Prenom : obligatoire
-public record UserParam(string Nom, string Prenom);
 internal class CmdLineParser
 {
     /*Todo:
-     * Rajouter -d
      * Rajouter -g + support de string
      * Ajouter Obligatoire et facultatif
      * ...
+     * Gestion d'erreur
      * Ability to parse different type of input
      *  => Ajouter la possibité de configurer le parseur
      */
@@ -90,6 +102,8 @@ internal class CmdLineParser
                 record = record with { ShouldLog = true };
             if (args[index] == "-p")
                 record = record with { Port = ParsePort(args[++index]) };
+            if (args[index] == "-d")
+                record = record with { MyNumerics = ParseNumerics(args[++index]).ToArray()};
         }
         return record;
     }
@@ -104,4 +118,6 @@ internal class CmdLineParser
         }
         throw new ArgumentException($"'{port}' is not a valid value for a port number.");
     }
+
+    private static IEnumerable<int> ParseNumerics(string numerics) => numerics.Split(',').Select(x => int.Parse(x));
 }
