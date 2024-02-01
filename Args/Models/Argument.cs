@@ -4,20 +4,22 @@ using System.Linq;
 
 namespace Args.Models;
 
-public record Param(bool ShouldLog, int Port, IEnumerable<int> MyNumerics, IEnumerable<string> MyStrings)
+public record Param(bool ShouldLog, int Port, IEnumerable<int> MyNumerics, IEnumerable<string> MyStrings, string? Me)
 {
-    public Param(bool shouldLog, int port) : this(shouldLog, port, Array.Empty<int>(), Array.Empty<string>()) { }
-    public Param(bool shouldLog, int port, IEnumerable<int> MyNumerics) : this(shouldLog, port, MyNumerics, Array.Empty<string>()) { }
+    public Param(bool shouldLog, int port, string me = "Tibo") : this(shouldLog, port, Array.Empty<int>(), Array.Empty<string>(), me) { }
+    public Param(bool shouldLog, int port, IEnumerable<int> MyNumerics, string me = "Tibo") : this(shouldLog, port, MyNumerics, Array.Empty<string>(), me) { }
 }
 
 public abstract class Argument
 {
     public string Key { get; init; }
     public abstract int AdditionalIncrement { get; }
+    public bool Required { get; init; }
 
-    public Argument(string key)
+    public Argument(string key, bool required = false)
     {
         Key = key;
+        Required = required;
     }
 
     public abstract Param Parse(string[] input, int position, Param parameter);
@@ -69,3 +71,29 @@ public class StringArrayArgument : Argument
     public override Param Parse(string[] input, int position, Param parameter) => parameter with { MyStrings = input[position + 1].Split(',') };
 }
 
+public class WhoAmI : Argument
+{
+    public WhoAmI() : base("-me", true) { }
+    public override int AdditionalIncrement => 1;
+    public override Param Parse(string[] input, int position, Param parameter) => parameter with { Me = ParsePerson(input[position + 1]) };
+
+    private static string ParsePerson(string person)
+    {
+        if (person.StartsWith("-l"))
+            throw new Exception();
+        if(person.Length < 2)
+            throw new Exception();
+
+        return person;
+    }
+}
+
+public class MissingArgumentException : Exception
+{
+    public MissingArgumentException(string propertyName) : base()
+    {
+        PropertyName = propertyName;
+    }
+
+    public string PropertyName { get; }
+}

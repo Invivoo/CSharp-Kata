@@ -7,7 +7,8 @@ namespace Args.Logic;
 internal class CmdLineParser
 {
     /*Todo:
-     * Ajouter Obligatoire et facultatif
+     * Refactorization, best practices... (exeception management for example)
+     * Parametrisation du facultatif
      * ...
      * Gestion d'erreur
      * Ability to parse different type of input
@@ -15,28 +16,34 @@ internal class CmdLineParser
      */
     private const int DefaultParam = 8080;
 
-    private IEnumerable<Argument> Arguments = new Argument[]
+    private IEnumerable<Argument> Parsers = new Argument[]
     {
         new LogArgument(),
         new PortArgument(),
         new IntegerArrayArgument(),
-        new StringArrayArgument()
+        new StringArrayArgument(),
+        new WhoAmI()
     };
 
     internal Param Parse(params string[] args)
     {
+        var parsers = new List<Argument>(Parsers);
         var record = new Param(false, DefaultParam);
         for (var index = 0; index < args.Length; index++)
         {
             var current = args[index];
-            var argument = Arguments.FirstOrDefault(x => x.Key == current);
-            if(argument != null)
+            var parser = Parsers.FirstOrDefault(x => x.Key == current);
+            if (parser != null)
             {
-                record = argument.Parse(args, index, record);
-                index += argument.AdditionalIncrement;
+                parsers.Remove(parser);
+                record = parser.Parse(args, index, record);
+                index += parser.AdditionalIncrement;
                 continue;
             }
         }
+        var missingRequiredArgument = parsers.FirstOrDefault(x => x.Required);
+        if (missingRequiredArgument != null)
+            throw new MissingArgumentException(missingRequiredArgument.Key);
         return record;
     }
 }
