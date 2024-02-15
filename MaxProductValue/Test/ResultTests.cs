@@ -38,7 +38,7 @@ public class ResultTests
         var expected = 36;
 
         // Act
-        var actual = tested.ComputeProduct();
+        var actual = tested.Product;
 
         // Assert
         actual.Should().Be(expected);
@@ -75,8 +75,5 @@ public class ResultTests
         actual.Should().Be(expected);
     }
 
-    private Partition CreatePartition(params int[] values)
-    {
-        return new Partition(values.ToList());
-    }
+    private static Partition CreatePartition(params int[] values) => new(values.ToList());
 }

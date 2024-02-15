@@ -1,17 +1,23 @@
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 public class Result
 {
     public int MaxValue {get; set;}
-    public List<Partition> ListPartitions = new();
+    public IEnumerable<Partition> ListPartitions { get; }
 
-    public Result(int maxValue, params Partition[] partitions)
+    public Result(int maxValue, Partition firstPartition, params Partition[] otherPartitions) 
+        : this(maxValue, new[] { firstPartition }.Union(otherPartitions))
+    {
+    }
+
+    public Result(int maxValue, IEnumerable<Partition> partitions)
     {
         this.MaxValue = maxValue;
         this.ListPartitions = partitions.ToList();
     }
 
-    public Result()
+    public Result() : this(0, Enumerable.Empty<Partition>())
     {
     }
 
@@ -21,30 +27,11 @@ public class Result
     }
 }
 
-public class Partition
+public class Partition(IEnumerable<int> values)
 {
-    public Partition(List<int> values)
-    {
-        this.Values = values;
-    }
-
-    public List<int> Values { get; }= [];
+    public IEnumerable<int> Values { get; } = values;
 
     public int Product => Values.Aggregate(1, (res, val) => res * val);
 
-    public int ComputeProduct()
-    {
-        var result = 1;
-        foreach (var v in Values)
-        {
-            result *= v;
-        }
-
-        return result;
-    }
-    
-    public override string ToString()
-    {
-        return $"[{string.Join(", ", Values)}]";
-    }
+    public override string ToString() => $"[{string.Join(", ", Values)}]";
 }
