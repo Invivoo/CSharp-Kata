@@ -34,3 +34,8 @@ Examples (input -> output)
 8 -> ([[3, 3, 2]], 18)
 
 10 --> ([[4, 3, 3], [3, 3, 2, 2]], 36)
+
+https://www.codewars.com/kata/5716a4c2794d305f4900156b
+
+Done GetMaxProductPartition
+ToDo implement CreatePartition

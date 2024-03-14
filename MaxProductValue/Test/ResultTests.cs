@@ -76,4 +76,5 @@ public class ResultTests
     }
 
     private static Partition CreatePartition(params int[] values) => new(values.ToList());
+
 }

@@ -29,6 +29,7 @@ public class Result
 
 public class Partition(IEnumerable<int> values)
 {
+    public Partition(params int[] input) : this(input as IEnumerable<int>) { }
     public IEnumerable<int> Values { get; } = values;
 
     public int Product => Values.Aggregate(1, (res, val) => res * val);
