@@ -1,5 +1,7 @@
 ﻿
 
+using System.Diagnostics;
+
 internal class PartionHelper
 {
     internal static IEnumerable<Partition> GetHighestProduct(IEnumerable<Partition> parameter)
@@ -24,6 +26,21 @@ internal class PartionHelper
 
     internal static IEnumerable<Partition> CreatePartitions(int inputValue)
     {
-        throw new NotImplementedException();
+        var first = new Partition(inputValue);
+        yield return first;
+        foreach(var split in Split(first))
+            yield return split;
+    }
+
+    internal static IEnumerable<Partition> Split(Partition partition)
+    {
+        var current = partition;
+        while (current.Values.First() > 1)
+        {
+            Debug.WriteLine(current);
+            Console.WriteLine(current);
+            current = new Partition(current.Values.First() -1, current.Values.Skip(1).Take(current.Values.Count() - 1), 1);
+            yield return current;
+        }
     }
 }
