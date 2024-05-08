@@ -4,7 +4,7 @@ using Xunit;
 public class CreatePartitionTests
 {
     [Fact]
-    public void ShouldReturn()
+    public void CreatePartitions_ShouldReturnOneDecomposition()
     {
         var expected = new Partition[] 
         { 
@@ -28,7 +28,7 @@ public class CreatePartitionTests
 
     //Todo: make the test pass
     [Fact]
-    public void ShouldReturn2()
+    public void CreatePartitions_ShouldReturn2Decompositions()
     {
         var expected = new Partition[]
         {
@@ -39,7 +39,31 @@ public class CreatePartitionTests
         };
 
         var actual = PartionHelper.CreatePartitions(8).ToArray();
+        
+        var result = string.Join(Environment.NewLine, actual.Select(x => x.ToString()));
 
-        actual.Should().Contain(expected);
+        foreach (var partition in expected)
+        {
+            actual.Should().ContainEquivalentOf(partition);
+        }
+    }
+
+
+    [Fact]
+    public void CreatePartitions_Should()
+    {
+        var expected = new Partition[]
+        {
+            new (3, 3, 1, 1)
+        };
+
+        var actual = PartionHelper.CreatePartitions(8).ToArray();
+
+        var result = string.Join(Environment.NewLine, actual.Select(x => x.ToString()));
+
+        foreach (var partition in expected)
+        {
+            actual.Should().ContainEquivalentOf(partition);
+        }
     }
 }
