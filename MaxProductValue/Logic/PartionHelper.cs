@@ -37,51 +37,51 @@ internal class PartionHelper
         var current = partition;
         while (current.Values.First() > 1)
         {
+            // Decrement first and add 1
             Debug.WriteLine(current);
             Console.WriteLine(current);
             current = new Partition(current.Values.First() -1, current.Values.Skip(1).Take(current.Values.Count() - 1), 1);
             yield return current;
 
-            //new (2, 1, 1, 1, 1, 1, 1),
-            //(6, 1, 1),
-            // 6, 2
-            // 5, 1, 1, 1
-            // 5, 2, 1
-            // 4, 1, 1, 1, 1
-            
-            // 4, 2, 1, 1 *****
-            // 4, 2, 2
-
-            // 4, 3, 1
-            // 2, 1, 1, 1, 1, 1, 1
-
-            var nextIndex = 1;
             var second = new Partition(current.Values);
-            while (second.Values.Count > nextIndex + 1 && second.Values[nextIndex] < second.Values[nextIndex - 1])
+            foreach(var subResult in Aggregate(second))
+                yield return subResult;
+        }
+    }
+
+    private static IEnumerable<Partition> Aggregate(Partition second)
+    {
+        var nextIndex = 1;
+        while (second.Values.Count > nextIndex + 1 && second.Values[nextIndex] < second.Values[nextIndex - 1])
+        {
+            //4, 1, 1, 1, 1 => 4, 2, 1, 1
+            // 4, 2, 1, 1 => 4, 2, 2
+            var parameters = second.Values.Take(nextIndex)
+                .Concat(new int[] { second.Values[nextIndex] + second.Values[nextIndex + 1] })
+                .Concat(second.Values.Skip(nextIndex+2));
+            second = new Partition(parameters);
+            yield return second;
+
+            var third = new Partition(second.Values);
+            while (nextIndex > 1 && third.Values[nextIndex] > 1 && third.Values[nextIndex - 1] < third.Values[nextIndex - 2])
             {
-                //4, 2, 1, 1
-                var parameters = second.Values.Take(nextIndex)
-                    .Concat(new int[] { second.Values[nextIndex] + second.Values[nextIndex + 1] })
-                    .Concat(second.Values.Skip(nextIndex+2));
-                second = new Partition(parameters);
-                yield return second; // 4, 2, 1, 1 => 4, 3, 1
-
-
-                //4, 2, 2 => 4, 3, 1 nextIndex = 2, second.Values[nextIndex] = 2
-                // 3, 2, 2, 1
-                var third = new Partition(second.Values);
-                while (nextIndex > 1 && third.Values[nextIndex] > 1 && third.Values[nextIndex - 1] < third.Values[nextIndex - 2])
-                {
-                    var nextParam = third.Values.Take(nextIndex - 1)
-                        .Concat(new int[] { third.Values[nextIndex - 1] +1, third.Values[nextIndex] -1 })
-                        .Concat(third.Values.Skip(nextIndex + 1));
-                    third = new Partition(nextParam);
-                    yield return third;
-                    // 3, 3, 1, 1 => recursivité? (split de third)
-                }
-                
-                nextIndex++;
+                var nextParam = third.Values.Take(nextIndex - 1)
+                    .Concat(new int[] { third.Values[nextIndex - 1] +1, third.Values[nextIndex] -1 })
+                    .Concat(third.Values.Skip(nextIndex + 1));
+                third = new Partition(nextParam);
+                yield return third;
+                // 3, 3, 1, 1 => recursivité? (split de third)
             }
+
+            if (nextIndex >= third.Values.Count - 2 && third.Values.Last() == 1 && third.Values.Count > 2)
+            {
+                var temp = third.Values.Take(third.Values.Count - 2)
+                    .Concat(new int[] { third.Values[third.Values.Count - 2] + 1 });
+                var tempPart = new Partition(temp);
+                yield return tempPart;
+            }
+
+            nextIndex++;
         }
     }
 }
