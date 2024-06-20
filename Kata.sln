@@ -7,7 +7,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Args", "Args\Args.csproj", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MaxProductValue", "MaxProductValue\MaxProductValue.csproj", "{38469FE1-3BF9-44E1-BD8D-6BFA660FF471}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MagicNumber", "MagicNumber\MagicNumber.csproj", "{D878A877-AA33-4277-96AE-8C9822C0D706}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MagicNumber", "MagicNumber\MagicNumber.csproj", "{D878A877-AA33-4277-96AE-8C9822C0D706}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Anagram", "Anagram\Anagram.csproj", "{C7B511A3-E134-4E43-AB5A-70087A2773D7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -41,6 +43,14 @@ Global
 		{D878A877-AA33-4277-96AE-8C9822C0D706}.Release|Any CPU.Build.0 = Release|Any CPU
 		{D878A877-AA33-4277-96AE-8C9822C0D706}.Release|x86.ActiveCfg = Release|x86
 		{D878A877-AA33-4277-96AE-8C9822C0D706}.Release|x86.Build.0 = Release|x86
+		{C7B511A3-E134-4E43-AB5A-70087A2773D7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C7B511A3-E134-4E43-AB5A-70087A2773D7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C7B511A3-E134-4E43-AB5A-70087A2773D7}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{C7B511A3-E134-4E43-AB5A-70087A2773D7}.Debug|x86.Build.0 = Debug|Any CPU
+		{C7B511A3-E134-4E43-AB5A-70087A2773D7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C7B511A3-E134-4E43-AB5A-70087A2773D7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C7B511A3-E134-4E43-AB5A-70087A2773D7}.Release|x86.ActiveCfg = Release|Any CPU
+		{C7B511A3-E134-4E43-AB5A-70087A2773D7}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
